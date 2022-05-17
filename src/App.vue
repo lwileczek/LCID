@@ -7,7 +7,6 @@ import ChessBoard from './components/ChessBoard.vue'
 
 <template>
   <div>
-    <img alt="Vue logo" src="./assets/logo.png" />
     <ChessBoard />
   </div>
 </template>
@@ -15,6 +14,8 @@ import ChessBoard from './components/ChessBoard.vue'
 <style>
 @import './assets/chessground.css';
 @import './assets/theme.css';
+@import './assets/chessboard.brown.css';
+@import './assets/embedded-pieces.css';
 /*
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

@@ -1,62 +1,53 @@
 <template>
-  <div class="app"> 
-    <p>{{name}}</p>
-    <input type="string" :value="name" @change="changeName">Pick a New Name
-    <div class="blue merida">
-      <div class="cg-board-wrap" @click="createBoard">using class now to make hting</div>
-    </div>
+  <div class='blue merida'>
+    <div ref='boardDiv' class='cg-board-wrap'></div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang='ts'>
+import { ref, onMounted } from 'vue'
 import { Chessground } from 'chessground'
 import { Api } from 'chessground/api'
+import { Key, MoveMetadata } from 'chessground/types'
 
-export default defineComponent({
-  name: 'ChessBoard',
-  components: {},
-  props: {
-    fakeProperty: {
-      type: String,
-      required: false,
-      default: 'Hello, property'
+let turn = true
+let board: Api
+const boardDiv = ref<HTMLElement>()
+const getTurnColor = () => {
+  return turn ? 'white' : 'black'
+}
+const changeTurn = (o: Key, d: Key, m: MoveMetadata) => {
+  turn = !turn
+  console.log(o,d,m)
+  board.set({
+    turnColor: getTurnColor(),
+    movable: {
+      color: getTurnColor()
     },
-  },
-  setup(){
-    const exDiv = ref<HTMLDivElement>()
-    console.log('ref Div')
-    console.log(exDiv)
-    return {
-      exDiv,
-      func(){console.log(exDiv.value)}
-    }
-  },
-  data() {
-    return {
-      name: 'Link',
-      board: null as null | Api
-    }
-  },
-  methods: {
-    changeName(event: Event) {
-      const newName = (event.target as HTMLInputElement).value
-      this.name = newName
-    },
-    createBoard(event: Event){
-      Chessground((event.target as HTMLElement), {
-        fen: 'r1bq1rk1/5ppp/p1np1b2/1p1Np3/4P3/2P5/PPN2PPP/R2QKB1R b KQ - 2 12',
-        turnColor: 'black',
-        orientation: 'white'
-      })
-    },
-    mounted() {
-      this.board = Chessground(this.$el, {
-        fen: 'r1bq1rk1/5ppp/p1np1b2/1p1Np3/4P3/2P5/PPN2PPP/R2QKB1R b KQ - 2 12',
-        turnColor: 'black',
-        orientation: 'white'
-      })
-    }
+  })
+}
+onMounted(() => {
+  if (boardDiv.value != undefined) {
+    board = Chessground(boardDiv.value, {
+      movable: {
+        color: getTurnColor(),
+        showDests: false,
+        events: {
+          after: (orig,dest,metadata) => {
+            changeTurn(orig, dest, metadata)
+          }
+        }
+      },
+      premovable: { enabled: false },
+      events: {
+        move: (orig, dest, capturedPiece) => {
+          console.log('A piece moved from ', orig, ' to ', dest)
+          if (capturedPiece != undefined) {
+            console.log('A piece was captured', capturedPiece)
+          }
+        },
+      },
+    })
   }
 })
 </script>

@@ -6,8 +6,8 @@
  */
 
 .cg-wrap {
-  width: 320px;
-  height: 320px;
+  width: 90vh;
+  height: 90vh;
   position: relative;
   display: block;
 }
