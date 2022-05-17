@@ -25,9 +25,11 @@ See [tuari build docs].
 
 ## Credits
  - Name inspired from [Shane's Chess Information Database (SCID)]
+ - Board & Pieces are from Lichess's [Chessground]
 
 <!-- Links used above -->
 [Shane's Chess Information Database (SCID)]: https://sourceforge.net/p/scid/wiki/StartHere/
 [releases]: https://github.com/lwileczek/LCID/releases
 [Tauri requirements]: https://tauri.studio/v1/guides/getting-started/prerequisites
 [tuari build docs]: https://tauri.studio/v1/api/cli/#build
+[Chessground]: https://github.com/lichess-org/chessground

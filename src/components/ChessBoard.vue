@@ -1,11 +1,56 @@
 <template>
-  <div class="blue merida">
-    <div ref="board" class="chess-board-wrap"></div> </br>
+  <div class='blue merida'>
+    <div ref='boardDiv' class='cg-board-wrap'></div>
   </div>
 </template>
 
-<script>
-import Chess from 'chess.js'
-import {Chessground} from 'chessground'
-import {uniques} from './Util.js'
+<script setup lang='ts'>
+import { ref, onMounted } from 'vue'
+import { Chessground } from 'chessground'
+import { Api } from 'chessground/api'
+import { Key, MoveMetadata } from 'chessground/types'
+
+let turn = true
+let board: Api
+const boardDiv = ref<HTMLElement>()
+const getTurnColor = () => {
+  return turn ? 'white' : 'black'
+}
+const changeTurn = (o: Key, d: Key, m: MoveMetadata) => {
+  turn = !turn
+  console.log(o,d,m)
+  board.set({
+    turnColor: getTurnColor(),
+    movable: {
+      color: getTurnColor()
+    },
+  })
+}
+onMounted(() => {
+  if (boardDiv.value != undefined) {
+    board = Chessground(boardDiv.value, {
+      movable: {
+        color: getTurnColor(),
+        showDests: false,
+        events: {
+          after: (orig,dest,metadata) => {
+            changeTurn(orig, dest, metadata)
+          }
+        }
+      },
+      premovable: { enabled: false },
+      events: {
+        move: (orig, dest, capturedPiece) => {
+          console.log('A piece moved from ', orig, ' to ', dest)
+          if (capturedPiece != undefined) {
+            console.log('A piece was captured', capturedPiece)
+          }
+        },
+      },
+    })
+  }
+})
 </script>
+
+<style>
+</style>
