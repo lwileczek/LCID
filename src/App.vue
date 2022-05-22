@@ -13,7 +13,7 @@ import ChessBoard from './components/ChessBoard.vue'
 
 <style>
 @import './assets/chessground.css';
-@import './assets/theme.css';
+/*@import './assets/theme.css';*/
 @import './assets/chessboard.brown.css';
 @import './assets/embedded-pieces.css';
 /*

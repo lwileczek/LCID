@@ -9,6 +9,7 @@ import { ref, onMounted } from 'vue'
 import { Chessground } from 'chessground'
 import { Api } from 'chessground/api'
 import { Key, MoveMetadata } from 'chessground/types'
+import { invoke } from '@tauri-apps/api/tauri'
 
 let turn = true
 let board: Api
@@ -19,6 +20,8 @@ const getTurnColor = () => {
 const changeTurn = (o: Key, d: Key, m: MoveMetadata) => {
   turn = !turn
   console.log(o,d,m)
+  console.log('Here is the FEN!', board.getFen())
+  invoke('check_legal_moves', { gameFen: board.getFen() })
   board.set({
     turnColor: getTurnColor(),
     movable: {
