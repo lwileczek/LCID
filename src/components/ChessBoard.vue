@@ -11,6 +11,10 @@ import { Api } from 'chessground/api'
 import { Key, MoveMetadata } from 'chessground/types'
 import { invoke } from '@tauri-apps/api/tauri'
 
+//interface LegalMoves {
+//    [index: string]: Key[]
+//}
+
 let turn = true
 let board: Api
 const boardDiv = ref<HTMLElement>()
@@ -20,14 +24,29 @@ const getTurnColor = () => {
 const changeTurn = (o: Key, d: Key, m: MoveMetadata) => {
   turn = !turn
   console.log(o,d,m)
-  console.log('Here is the FEN!', board.getFen())
   invoke('check_legal_moves', { gameFen: board.getFen() })
-  board.set({
-    turnColor: getTurnColor(),
-    movable: {
-      color: getTurnColor()
-    },
-  })
+    .then((legalMoves) => {
+      //const typedMoved = {}
+      console.log('Got this from the rust', legalMoves)
+      //Key is not assignable from String :(((((
+      //for (const rustKey in legalMoves) {
+      //  const k: Key = rustKey
+      //  const moves: Key[] = legalMoves[rustKey]
+      //  typedMoved[k] = moves
+      //}
+      board.set({
+        turnColor: getTurnColor(),
+        movable: {
+          color: getTurnColor(),
+        },
+      })
+    })
+  //board.set({
+  //  turnColor: getTurnColor(),
+  //  movable: {
+  //    color: getTurnColor(),
+  //  },
+  //})
 }
 onMounted(() => {
   if (boardDiv.value != undefined) {
