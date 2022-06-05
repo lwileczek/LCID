@@ -2,7 +2,9 @@
   all(not(debug_assertions), target_os = "windows"),
   windows_subsystem = "windows"
 )]
+
 mod chess;
+use std::sync::Mutex;
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
 fn main() {
@@ -15,9 +17,15 @@ fn main() {
     .add_item(CustomMenuItem::new("hide", "Hide"))
     .add_submenu(submenu);
 
+  let chess_position = chess::create_state();
   tauri::Builder::default()
+      .manage(chess::GameState(Mutex::new(chess_position)))
       .menu(menu)
-      .invoke_handler(tauri::generate_handler![my_custom_command,chess::check_legal_moves])
+      .invoke_handler(tauri::generate_handler![
+                      my_custom_command,
+                      chess::check_legal_moves,
+                      chess::play_move
+      ])
       .run(tauri::generate_context!())
       .expect("error while running tauri application");
 }
